@@ -1,14 +1,18 @@
 <?php
 
-// GameController.php
-
 namespace App\Http\Controllers;
 
+use App\Dto\GameDto;
 use Illuminate\Http\Request;
 use App\Models\Game;
+use App\Services\GameServiceInterface;
 
 class GameController extends Controller
 {
+    public function __construct(GameServiceInterface $game)
+    {
+        $this->game = $game;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +20,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        $games = Game::all();
+        $games = $this->game->getAll();
         
         return view('index',compact('games'));
     }
@@ -43,20 +47,17 @@ class GameController extends Controller
             'name' => 'required|max:255',
             'price' => 'required',
         ]);
-        $show = Game::create($validatedData);
+
+        $game = new GameDto(
+            null,
+            $validatedData['name'], 
+            $validatedData['price'],
+            0
+        );
+
+        $this->game->save($game);
    
         return redirect('/games')->with('success', 'Game is successfully saved');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -67,7 +68,7 @@ class GameController extends Controller
      */
     public function edit($id)
     {
-        $game = Game::findOrFail($id);
+        $game = $this->game->find($id);
 
         return view('edit', compact('game'));
     }
@@ -85,7 +86,15 @@ class GameController extends Controller
             'name' => 'required|max:255',
             'price' => 'required'
         ]);
-        Game::whereId($id)->update($validatedData);
+
+        $game = new GameDto(
+            $id,
+            $validatedData['name'], 
+            $validatedData['price'],
+            0
+        );
+
+        $this->game->save($game);
 
         return redirect('/games')->with('success', 'Game Data is successfully updated');
     }
@@ -98,8 +107,7 @@ class GameController extends Controller
      */
     public function destroy($id)
     {
-        $game = Game::findOrFail($id);
-        $game->delete();
+        $game = $this->game->delete($id);
 
         return redirect('/games')->with('success', 'Game Data is successfully deleted');
     }
