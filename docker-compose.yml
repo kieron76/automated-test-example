@@ -1,0 +1,43 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./provisioning/php-nginx.Dockerfile
+    container_name: testing-app
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - ~/.ssh:/app/.ssh
+    working_dir: /var/www/html
+    environment:
+      - TERM=xterm
+      - TZ=Europe/London
+      - NEW_RELIC_ENABLED=${NEW_RELIC_ENABLED}
+      - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
+      - NEW_RELIC_APP_NAME=${NEW_RELIC_APP_NAME}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "22:22"
+    depends_on:
+      - db
+    networks:
+      - testing-app-network
+  db:
+    image: mysql:5.7
+    container_name: testing-db
+    restart: unless-stopped
+    volumes:
+      - ./provisioning/db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: fidomoney
+      MYSQL_ROOT_PASSWORD: test
+    networks:
+      - testing-app-network
+
+networks:
+  testing-app-network:
+    driver: bridge
