@@ -14,10 +14,14 @@ class GameRepository
        $this->model = get_class($model);
     }
 
-    public function getAll(): array
+    public function getAll(): ?array
     {
         $games = ($this->model)::all();
         $returnGames = [];
+
+        if (!$games) {
+            return null;
+        }
 
         foreach ($games as $game) {
             $returnGames[] = new GameDto(
