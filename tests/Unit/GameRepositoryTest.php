@@ -24,6 +24,8 @@ it('can get all records', function() {
     $games = $gameRepo->getAll();
 
     expect($games)->toBeArray();
+
+    expect($games[0])->toEqual(new GameDto(1,'Monopoly', 50, 3));
 });
 
 it('returns null when no records', function() {

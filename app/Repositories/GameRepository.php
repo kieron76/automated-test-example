@@ -28,7 +28,7 @@ class GameRepository
                 $game->id,
                 $game->name,
                 $game->price,
-                $game->index
+                $game->price
             );
         }
 
