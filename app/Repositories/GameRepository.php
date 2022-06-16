@@ -28,7 +28,7 @@ class GameRepository
                 $game->id,
                 $game->name,
                 $game->price,
-                $game->price
+                $game->index
             );
         }
 
@@ -49,23 +49,22 @@ class GameRepository
 
     public function create(GameDto $game) 
     {
-        $game = new $this->model;
-
-        $game->name = $game->getName();
-        $game->price = $game->getPrice();
-        $game->index = $game->getIndex();
-
-        $game->save();
+        ($this->model)::create([
+            'name' => $game->getName(),
+            'price' => $game->getPrice(),
+            'index' => $game->getIndex(),
+        ]);
     }
 
     public function update(GameDto $game) 
     {
-        $game = $this->find($game->getId());
+        //$gameModel = ($this->model)::findOrFail($game->getId());
+        $gameModel = ($this->model)::findOrFail(4);
 
-        $game->name = $game->getName();
-        $game->price = $game->getPrice();
-        $game->index = $game->getIndex();
+        $gameModel->name = $game->getName();
+        $gameModel->price = $game->getPrice();
+        $gameModel->index = $game->getIndex();
 
-        $game->save();
+        $gameModel->save();
     }
 }

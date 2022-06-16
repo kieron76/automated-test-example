@@ -21,7 +21,7 @@ class GameService implements GameServiceInterface
         return $this->gameRepository->getAll();
     }
 
-    public function save(GameDto $game) : array
+    public function save(GameDto $game) 
     {
         try {
             $response = $this->gameCorp->getRating($game->getName());
@@ -40,8 +40,10 @@ class GameService implements GameServiceInterface
         );
 
         try {
+
+            $id = $game->getId();
         
-            if ($this->gameRepository->find($game->getId())) {
+            if ($id && $this->gameRepository->find($id)) {
                 $this->gameRepository->update($game);
             } else {
                 $this->gameRepository->create($game);
