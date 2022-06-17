@@ -82,6 +82,7 @@ class GameController extends Controller
      */
     public function update(Request $request, $id)
     {
+        die("sdfsdf");
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'price' => 'required'
@@ -95,6 +96,7 @@ class GameController extends Controller
         );
 
         $this->game->save($game);
+
 
         return redirect('/games')->with('success', 'Game Data is successfully updated');
     }

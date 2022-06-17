@@ -21,7 +21,7 @@ class GameService implements GameServiceInterface
         return $this->gameRepository->getAll();
     }
 
-    public function save(GameDto $game) 
+    public function save(GameDto $game) : GameDto
     {
         try {
             $response = $this->gameCorp->getRating($game->getName());
@@ -52,6 +52,8 @@ class GameService implements GameServiceInterface
         } catch (Exception $e) {
             throw new Exception("Unable to save at this time, please try again later");
         }
+
+        return $game;
 
     }
 
